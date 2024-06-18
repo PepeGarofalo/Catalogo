@@ -12,8 +12,8 @@ import ProvinciaSelector from '../layouts/provinciaselect';
 import MunicipioSelector from '../layouts/municipioselect';
 import './methodsCss.css';
 const MySwal = withReactContent(Swal);
-const URI = 'http://localhost:3002/iniciativa';
-// hasta aquiiiisaddddddddddddddddddddddddddddddddddddddddd
+import API_ENDPOINTS from '../../src/config/apiConfig';
+
 const Editiniciativa = () => {
   const navigate = useNavigate();
   const { identificador } = useParams();
@@ -31,7 +31,10 @@ const Editiniciativa = () => {
     contacto: "",
     telefonos: "",
     correo: "",
-    redes: "",
+    facebook: "",
+    instagram: "",
+    twitter: "",
+    imagenes: []
   });
 
   const {
@@ -45,17 +48,22 @@ const Editiniciativa = () => {
     nombre_municipio,
     nombre_provincia,
     propietario,
-    redes,
+    facebook,
+    instagram,
+    twitter,
     telefonos,
     tematica,
+    imagenes=[]
   } = formData;
 
-  const [existeIniciativa, setExisteIniciativa] = useState(false);
+  // const [existeIniciativa, setExisteIniciativa] = useState(false);
 
   const setIn = useCallback(async () => {
     try {
-      const response = await axios.get(`${URI}/${identificador}`);
+      const response = await axios.get(`${API_ENDPOINTS.INICIATIVA}/${identificador}`);
       const iniciativaData = response.data;
+      console.log("Inciativa");
+      console.log(iniciativaData);
 
       if (iniciativaData) {
         setNombreIniciativaOriginal(iniciativaData.nombre_iniciativa);
@@ -160,52 +168,65 @@ const Editiniciativa = () => {
     e.preventDefault();
 
     // Validación: Si el nombre de la iniciativa no cambia, continuar con la actualización
-    if (formData.nombre_iniciativa === nombreIniciativaOriginal) {
-      setExisteIniciativa(false);
+    // if (formData.nombre_iniciativa === nombreIniciativaOriginal) {
+    //   setExisteIniciativa(false);
 
-      // Utiliza handleChange en lugar de formData directamente
-      await axios.put(`${URI}/${identificador}`, formData, {
-        headers: {
-          Authorization: `Bearer ${user._access_token}`,
-        },
-      });
+    //   // Utiliza handleChange en lugar de formData directamente
+    //   await axios.put(`${API_ENDPOINTS.INICIATIVA}/${identificador}`, formData, {
+    //     headers: {
+    //       Authorization: `Bearer ${user._access_token}`,
+    //     },
+    //   });
 
-      MySwal.fire({
-        icon: 'success',
-        title: 'Actualización exitosa',
-        text: 'La iniciativa se actualizó correctamente.',
-        confirmButtonColor: '#F5A301',
-        confirmButtonText: 'Aceptar',
-      });
+    //   MySwal.fire({
+    //     icon: 'success',
+    //     title: 'Actualización exitosa',
+    //     text: 'La iniciativa se actualizó correctamente.',
+    //     confirmButtonColor: '#F5A301',
+    //     confirmButtonText: 'Aceptar',
+    //   });
 
-      navigate('ShowIniciativa');
-      return;
-    }
+    //   navigate('ShowIniciativa');
+    //   return;
+    // }
 
     // Validación: Verificar que no exista una iniciativa con el nuevo nombre
     const iniciativas = await loadIniciativas();
     const iniciativaExistente = iniciativas.data.some((i) => i.nombre_iniciativa === formData.nombre_iniciativa);
 
-    if (iniciativaExistente) {
-      setExisteIniciativa(true);
-      MySwal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'La iniciativa ya existe. Por favor, intente con un nombre diferente.',
-        confirmButtonColor: '#F5A301',
-        confirmButtonText: 'Aceptar',
-      });
-      return;
-    }
+    // if (iniciativaExistente) {
+    //   setExisteIniciativa(true);
+    //   MySwal.fire({
+    //     icon: 'error',
+    //     title: 'Error',
+    //     text: 'La iniciativa ya existe. Por favor, intente con un nombre diferente.',
+    //     confirmButtonColor: '#F5A301',
+    //     confirmButtonText: 'Aceptar',
+    //   });
+    //   return;
+    // }
 
-    setExisteIniciativa(false);
+    // setExisteIniciativa(false);
+
+    const formDataImage = new FormData(e.target)
+    console.log("Form data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+    console.log(formDataImage);
+
 
     // Utiliza handleChange en lugar de formData directamente
-    await axios.put(`${URI}/${identificador}`, formData, {
+    await axios.put(`${API_ENDPOINTS.INICIATIVA}/${identificador}`, formData, {
       headers: {
         Authorization: `Bearer ${user._access_token}`,
       },
-    });
+    }),
+
+    // await axios.put(`${URI}/${identificador}`, formDataImage, {
+    //   headers: {
+    //     Authorization: `Bearer ${user._access_token}`,
+    //     "Content-Type": "multipart/form-data"
+    //   },
+    // })
+
 
     MySwal.fire({
       icon: 'success',
@@ -225,19 +246,19 @@ const Editiniciativa = () => {
   }, [identificador, setIn]);
   return (<>
     <div className="">
-      <div className="divalmacen" style={{ backgroundImage: "url('/src/assets/nueva iniciativa foto.png')" }}>
+      <div className="divalmacen" style={{ backgroundImage: "url('/assets/nueva iniciativa foto.jpg')" }}>
         <div className="container">
           <div className="row padtp">
             <div className="col-6">
-              <Link to={'/ShowIniciativa'}><img className='' src="/src/assets/atras.png" alt="Volver" /></Link>
+              <Link to={'/ShowIniciativa'}><img className='' src="/assets/atras.png" alt="Volver" /></Link>
             </div>
             <div className="col-6 text-white fontpar justend">
-              <img src="/src/assets/administracion.png" alt="" />&nbsp; Administración
+              <img src="/assets/administracion.png" alt="" />&nbsp; Administración
             </div>
           </div>
           <div className="row mrgt">
             <div className="col-2 justend">
-              <img src="/src/assets/nueva iniciativa grande.png" alt="hola" />
+              <img src="/assets/nueva iniciativa grande.png" alt="hola" />
             </div>
             <div className="col-8 center padintext">
               <p>Inserte la información requerida en cada campo para modificar la iniciativa en el sistema.</p>
@@ -253,7 +274,7 @@ const Editiniciativa = () => {
             <p className='colortxt'> </p>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/nombre.png" alt="" /> Nombre de la Iniciativa
+                <img src="/assets/nombre.png" alt="" /> Nombre de la Iniciativa
               </label>
               <input
                 value={nombre_iniciativa}
@@ -267,7 +288,7 @@ const Editiniciativa = () => {
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/tematica.png" alt="" />    Temática
+                <img src="/assets/tematica.png" alt="" />    Temática
               </label>
               <input
                 value={tematica}
@@ -281,7 +302,7 @@ const Editiniciativa = () => {
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/propietario.png" alt="" />  Propietario
+                <img src="/assets/propietario.png" alt="" />  Propietario
               </label>
               <input
                 value={propietario}
@@ -312,7 +333,7 @@ const Editiniciativa = () => {
 
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/direccion.png" alt="" />   Dirección
+                <img src="/assets/direccion.png" alt="" />   Dirección
               </label>
               <input
                 value={direccion}
@@ -326,7 +347,7 @@ const Editiniciativa = () => {
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/latitud longitud.png" alt="" />  Coordenadas
+                <img src="/assets/latitud longitud.png" alt="" />  Coordenadas
               </label>
               <div className="d-flex">
                 <input
@@ -367,7 +388,7 @@ const Editiniciativa = () => {
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/hectareas.png" alt="" /> Hectáreas
+                <img src="/assets/hectareas.png" alt="" /> Hectáreas
               </label>
               <input
                 value={hectareas}
@@ -380,7 +401,7 @@ const Editiniciativa = () => {
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/persona contacto.png" alt="" /> Contacto
+                <img src="/assets/persona contacto.png" alt="" /> Contacto
               </label>
               <input
                 value={contacto}
@@ -397,12 +418,12 @@ const Editiniciativa = () => {
 
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/redes sociales.png" alt="" /> Redes sociales
+                <img src="/assets/redes sociales.png" alt="" /> Facebook
               </label>
               <input
-                value={redes}
+                value={facebook}
                 onChange={handleChange}
-                name='redes'
+                name='facebook'
                 type="text"
                 className="form-control same-width inptt"
                 placeholder='Inserte las redes sociales de la iniciativa'
@@ -410,7 +431,33 @@ const Editiniciativa = () => {
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/telefono.png" alt="" />      Teléfono
+                <img src="/assets/redes sociales.png" alt="" /> Instagram
+              </label>
+              <input
+                value={instagram}
+                onChange={handleChange}
+                name='instagram'
+                type="text"
+                className="form-control same-width inptt"
+                placeholder='Inserte las redes sociales de la iniciativa'
+              />
+            </div>
+            <div className="col-md-4 mb-3">
+              <label htmlFor="" className="form-label txtlabel">
+                <img src="/assets/redes sociales.png" alt="" /> Twitter
+              </label>
+              <input
+                value={twitter}
+                onChange={handleChange}
+                name='twitter'
+                type="text"
+                className="form-control same-width inptt"
+                placeholder='Inserte las redes sociales de la iniciativa'
+              />
+            </div>
+            <div className="col-md-4 mb-3">
+              <label htmlFor="" className="form-label txtlabel">
+                <img src="/assets/telefono.png" alt="" />      Teléfono
               </label>
               <input
                 value={telefonos}
@@ -424,7 +471,7 @@ const Editiniciativa = () => {
 
             <div className="col-md-4 mb-3">
               <label htmlFor="" className="form-label txtlabel">
-                <img src="/src/assets/correo.png" alt="" />   Correo
+                <img src="/assets/correo.png" alt="" />   Correo
               </label>
               <input
                 value={correo}
@@ -439,7 +486,7 @@ const Editiniciativa = () => {
           </div>
           <div className="row">
             <div className="col-md-4 pt-2 justend txtlabel ">
-              <img src="/src/assets/imagenes.png" alt="Subir img" /> &nbsp;Imágenes &nbsp;
+              <img src="/assets/imagenes.png" alt="Subir img" /> &nbsp;Imágenes &nbsp;
             </div>
             <div className="col-md-4 mb-3">
               {/* <input type="hidden" name="identificador" value={newIniciativaId} /> */}
@@ -447,12 +494,19 @@ const Editiniciativa = () => {
               <input
                 type="file"
                 name="images"
-                accept=".pdf,.doc,.docx,.txt"
+                multiple
+                max={9}
+                accept=".jpg,.jpeg,.png,.gif"
                 // onChange={handleImageChange}
                 className="form-control same-width inptt input-file"
               />
             </div>
           </div>
+          {/* <div className='row flex'>
+            {imagenes && imagenes.length && imagenes.map((path) => {
+              return <img key={path} src={path} alt='' />
+            })}
+          </div> */}
           <div className="row">
             <div className="col-md-4 d-flex justify-content-center mrg ">
               <button type="submit" className=" btn btnst">

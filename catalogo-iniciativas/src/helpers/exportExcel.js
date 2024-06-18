@@ -18,7 +18,9 @@ export const exportToXLSX = (iniciativas) => {
     iniciativa.contacto,
     iniciativa.telefonos,
     iniciativa.correo,
-    iniciativa.redes,
+    iniciativa.facebook,
+    iniciativa.instagram,
+    iniciativa.twitter,
   ]);
 
   // Crea una hoja de cálculo a partir de los datos
@@ -35,7 +37,9 @@ export const exportToXLSX = (iniciativas) => {
     "Contacto",
     "Teléfonos",
     "Correo",
-    "Redes",
+    "Facebook",
+    "Instagram",
+    "Twitter",
     /* Agrega más encabezados aquí */
   ], ...data]);
 

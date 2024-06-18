@@ -3,9 +3,10 @@ import React, { useRef, useEffect, useState } from 'react';
 import './home.css';
 import Pilares from '../layouts/pilares';
 import Card from '../layouts/card';
+import Footers from '../layouts/footer';
 import axios from 'axios';
 import SearchBar from '../layouts/searchBar';
-const URI = 'http://localhost:3002/iniciativa';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 const Home = () => {
   const pilaresRef = useRef(null);
@@ -23,7 +24,7 @@ const Home = () => {
 
   useEffect(() => {
     // Realiza una solicitud Axios para obtener la información de iniciativas
-    axios.get(`${URI}`)
+    axios.get(`${API_ENDPOINTS.INICIATIVA}`)
       .then((response) => {
         setIniciativas(response.data); // Establece las iniciativas en el estado
       })
@@ -35,12 +36,12 @@ const Home = () => {
   return (
     < >
     <SearchBar/>
-      <div className='contimg andale' style={{ backgroundImage: `url("/src/assets/1.svg")` }}>
+      <div className='contimg andale' style={{ backgroundImage: `url("/assets/1.jpg")` }}>
         {/* Agrega el contenido sobre la imagen */}
         <div className="container">
           <div className="row">
             <div className="col-12 mgcont">
-              <img className='sizehomelogo' src="/src/assets/consultor blanco.png" alt="" />
+              <img className='sizehomelogo' src="/assets/bun.svg" alt="" />
             </div>
           </div>
           <div className="row mgcont1">
@@ -66,19 +67,15 @@ const Home = () => {
           </div>
           <div className="row mgcont4">
             <div className="col-3 scrollbtn" onClick={scrollToPilares}   style={{ whiteSpace: 'nowrap' }}>
-              <img src="/src/assets/scroll.png" className='scroll' alt="jejej" /> &nbsp; Conocer más
+              <img src="/assets/scroll.png" className='scroll' alt="jejej" /> &nbsp; Conocer más
             </div>
           </div>
         </div>
       </div>
-      <Pilares ref={pilaresRef} />
-      <div className="container">
-        <div className="row">
-            <Card iniciativas={iniciativas} />
-        </div>
-      </div>
-      <div className='footerhome'>
-      </div>
+   <Pilares ref={pilaresRef}/> 
+   <Card iniciativas={iniciativas} />
+   <Footers></Footers>
+ 
     </>
   );
 };

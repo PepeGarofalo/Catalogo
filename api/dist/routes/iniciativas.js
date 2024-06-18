@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+const express_1 = require("express");
+const iniciativa_1 = require("../controllers/iniciativa");
+const multerConfig_1 = require("../helpers/multerConfig");
+exports.router = (0, express_1.Router)();
+// router.get('/hello',(req,res)=> res.send('hello word'));
+exports.router.post('/', iniciativa_1.createIniciativa);
+exports.router.get('/:identificador', [], iniciativa_1.getOneiniciativas);
+exports.router.get('/', iniciativa_1.getIniciativa);
+exports.router.put('/:identificador', [multerConfig_1.upload.array('images', 5)], iniciativa_1.putIniciativa);
+exports.router.delete('/:identificador', iniciativa_1.deleteIniciativa);
+exports.router.get('/provincia/:nombre_provincia', [], iniciativa_1.getnombreProvincia);
+exports.router.get('/municipio/:nombre_municipio', [], iniciativa_1.getnombreMunicipio);
+exports.router.put('/:identificador/:destacada', [], iniciativa_1.toggleDestacada);

@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import '../layouts/asideResponsive.css';
 import { Map } from "./map";  
-
-const URI = 'http://localhost:3002/iniciativa';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 const AsideResponsive = () => {
   const [allIniciativas, setAllIniciativas] = useState([]);
@@ -15,7 +14,7 @@ const AsideResponsive = () => {
   const [showMap, setShowMap] = useState(true);
 
   useEffect(() => {
-    axios.get(URI)
+    axios.get(API_ENDPOINTS.INICIATIVA)
       .then((response) => {
         setAllIniciativas(response.data);
         const groupedByProvincia = response.data.reduce((acc, iniciativa) => {
@@ -81,7 +80,7 @@ const AsideResponsive = () => {
                       <div className="">
                         <ul className="">
                           <div className="vete" onClick={handleCloseButtonClick}>
-                            <img src="/src/assets/closet.png" alt="cerrar" />
+                            <img src="/assets/closet.png" alt="cerrar" />
                           </div>
                           {detalles.map((detalle, index) => (
                             <React.Fragment key={index}>
@@ -104,7 +103,7 @@ const AsideResponsive = () => {
             </div>
 
             <div className='texex'>
-              <img className="icoap" onClick={handleExportToXLSX} src="/src/assets/exportar excel.png" alt="" title="Exportar a Excel" /> 
+              <img className="icoap" onClick={handleExportToXLSX} src="/assets/exportar excel.png" alt="" title="Exportar a Excel" /> 
               <div className="pe">
                 Exportar tabla en Excel
               </div>
@@ -117,7 +116,7 @@ const AsideResponsive = () => {
 
       <div className={showMap ? "vertical-center " : "corn"}>
         <div className="corner">
-          <img className="btncolres" role="button" src={showMap ? "/src/assets/abreres.png " : "/src/assets/cerrares.png"} alt="Boton Colapse" onClick={handleToggleMap} />
+          <img className="btncolres" role="button" src={showMap ? "/assets/abreres.png " : "/assets/cerrares.png"} alt="Boton Colapse" onClick={handleToggleMap} />
         </div>
       </div>
     </div>

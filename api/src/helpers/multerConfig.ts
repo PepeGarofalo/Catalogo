@@ -12,8 +12,10 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
-
+const upload = multer({
+  storage,
+  limits: { files: 10 } // Limita a un máximo de 5 archivos
+});
 export { upload }; // Exporta la configuración de multer
 
 // Puedes exportar otras cosas si es necesario

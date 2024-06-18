@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/apiConfig';
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
@@ -9,7 +10,7 @@ const SearchBar = () => {
   useEffect(() => {
     const fetchIniciativas = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/iniciativa');
+        const response = await axios.get(API_ENDPOINTS.INICIATIVA);
         const iniciativas = response.data;
         if (searchTerm) {
           const filtered = iniciativas.filter((iniciativa) =>
@@ -39,7 +40,7 @@ const SearchBar = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
- <img src="/src/assets/busc.png" className="iconlg mgicon lgsi" alt="Icon Search" />
+ <img src="/assets/busc.png" className="iconlg mgicon lgsi" alt="Icon Search" />
       </div>
 
       {/* Resultados de búsqueda */}
@@ -48,7 +49,7 @@ const SearchBar = () => {
           <ul className='searcnavbar '>
             {filteredResults.map((iniciativa) => (
               <li className='serachresult' key={iniciativa.identificador} onClick={() => handleResultClick(iniciativa)}>
-                <img className="imglist" src="/src/assets/icon.png" alt="Icono"/>
+                <img className="imglist" src="/assets/icon.png" alt="Icono"/>
                 <Link className='serachresult' to={`/ficha/${iniciativa.identificador}`}>
                   {iniciativa.nombre_iniciativa}
                 </Link>

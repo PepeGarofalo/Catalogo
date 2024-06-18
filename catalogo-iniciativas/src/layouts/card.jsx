@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../components/home.css';
 import { Link } from 'react-router-dom';
+
 const Card = ({ iniciativas }) => {
   // Filtra iniciativas destacadas
   const destacadas = iniciativas.filter((iniciativa) => iniciativa.destacada);
@@ -18,11 +19,18 @@ const Card = ({ iniciativas }) => {
     .slice(0, 3); // Toma las primeras tres
 
   return (
-    <div className="row">
+    <div className="container">
+       <div className="row">
       {iniciativasAleatorias.map((iniciativa) => (
         <div key={iniciativa.identificador} className="col-lg-4">
           <div className="card cardstyle">
-            <img src="/src/assets/señor.jpg" className="styleimgcard" alt="Imagen Destacada" />
+            {iniciativa.imagenes && iniciativa.imagenes.length > 0 ? (
+              // Si hay imágenes en la lista, muestra la primera imagen
+              <img src={iniciativa.imagenes[0]} className="styleimgcard" alt="Imagen Destacada" />
+            ) : (
+              // Si no hay imágenes, muestra la imagen de marcador de posición
+              <img src="/assets/señor.jpg" className="styleimgcard" alt="Imagen Destacada" />
+            )}
             <div className="card-body">
               <p className="card-title subti">Nombre iniciativa:</p>
               <p className="colorfontcard">{iniciativa.nombre_iniciativa}</p>
@@ -36,6 +44,8 @@ const Card = ({ iniciativas }) => {
         </div>
       ))}
     </div>
+    </div>
+   
   );
 };
 

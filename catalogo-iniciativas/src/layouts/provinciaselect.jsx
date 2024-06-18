@@ -32,14 +32,14 @@ const ProvinciaSelector = ({ onProvinciaChange, initProvincia }) => {
     'Granma',
     'Santiago de Cuba',
     'Guantánamo',
-    'Municipio Especial Isla de la Juventud',
+    'Isla de la Juventud',
   ];
 
   return (
     <div className='row'>
       <div className='col-12'>
         <div>
-          <img src="/src/assets/prov-municip.png" alt="" /> <label className='form-label txtlabel pimgg' htmlFor="provincia">Provincia:</label>
+          <img src="/assets/prov-municip.png" alt="" /> <label className='form-label txtlabel pimgg' htmlFor="provincia">Provincia:</label>
         </div>
         <select required className='selectstyle' id="provincia" value={selectedProvincia} onChange={handleProvinciaChange}>
           <option value="">Selecciona una provincia</option>

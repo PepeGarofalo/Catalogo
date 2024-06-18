@@ -1,31 +1,20 @@
-import { Request, Response } from 'express'
-import { genearateJswToken } from '../helpers/auth'
-export const authController = async (req: Request, res: Response) => {
-    
-    const { username = '', password = '' } = req.body
-    try {
-        if (username === '' || password === '') {
-            return res.status(400).json({ msg: "Inserte correctamente las credenciales" })
-        }
-        const cred = {
-            user: process.env.mockuser || '',
-            password: process.env.mockpassword || ''
-        }
-     
-        
-        
-        
+// src/controllers/authController.js
+import { Request, Response } from 'express';
+import { Users } from '../entities/user';
 
-        if (!(cred.user === username) || !(cred.password === password)) {
-            return res.status(400).json({ msg: "Error al introducir las credenciales" })
-        }
-        const token = genearateJswToken({ userName: username })
-        
-        return res.json({
-            access_token: token
-        })
-    } catch (error) {
-        return res.status(500).json({ msg: "Server error" })
+export const authenticateUser = async (req: Request, res: Response) => {
+  try {
+    const { userscatalogo, pasworddd } = req.body;
+    const user = await Users.findOne({ where: { userscatalogo } });
+
+    if (user && user.pasworddd === pasworddd) {
+      return res.json({ isAuthenticated: true });
+    } else {
+      return res.json({ isAuthenticated: false });
     }
-}
-
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+};

@@ -1,3 +1,4 @@
+// src/components/Estadistica.js
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import './estadistica.css';
@@ -5,15 +6,15 @@ import { IniciativasPorProvinciaPie } from '../layouts/PiesChart';
 import IniciativasPorMunicipioBar from '../layouts/PiesChartMun';
 import SearchBar from '../layouts/searchBar';
 import axios from 'axios';
+import Footers from '../layouts/footer';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 export const Estadistica = () => {
     const [provinciaSeleccionada, setProvinciaSeleccionada] = useState('');
     const [provincias, setProvincias] = useState([]);
 
     useEffect(() => {
-        const URI = 'http://localhost:3002/iniciativa';
-
-        axios.get(URI)
+        axios.get(API_ENDPOINTS.INICIATIVA)
             .then((response) => {
                 const provinciasUnicas = Array.from(new Set(response.data.map((iniciativa) => iniciativa.nombre_provincia.trim())));
                 setProvincias(provinciasUnicas);
@@ -55,8 +56,7 @@ export const Estadistica = () => {
                 </div>
             </div>
         </div>
-        <div className='footerhome'>
-      </div>
+      <Footers></Footers>
         </>
    
     );

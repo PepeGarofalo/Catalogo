@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import Ban from '../layouts/banner-img';
 import Info from '../layouts/infoF';
+import Footers from '../layouts/footer';
 import './ficha.css';
 import { useParams } from 'react-router-dom';
 import { Element } from 'react-scroll';
 import axios from 'axios';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
-const URI = 'http://localhost:3002/iniciativa';
 
 const Ficha = () => {
   const { identificador } = useParams();
@@ -16,7 +17,7 @@ const Ficha = () => {
   useEffect(() => {
     const fetchIniciativas = async () => {
       try {
-        const response = await axios.get(URI);
+        const response = await axios.get(API_ENDPOINTS.INICIATIVA);
         setIniciativas(response.data);
       } catch (error) {
         console.error('Error al obtener la lista de iniciativas:', error);
@@ -44,6 +45,7 @@ const Ficha = () => {
         <Info identificador={identificador.toString()} />
       </Element>
     )}
+       <Footers></Footers>
     </>
   );
 };

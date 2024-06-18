@@ -21,7 +21,7 @@ const MunicipioSelector = ({ onMunicipioChange, provinciaSeleccionada, initMunic
     'Granma': ['Bartolomé Masó', 'Bayamo', 'Buey Arriba', 'Campechuela', 'Cauto Cristo', 'Guisa', 'Jiguaní', 'Manzanillo', 'Media Luna', 'Niquero', 'Pilón', 'Río Cauto', 'Yara'],
     'Santiago de Cuba': ['Contramaestre', 'Guamá', 'Julio Antonio Mella', 'Palma Soriano', 'San Luis', 'Santiago de Cuba', 'Segundo Frente', 'Songo la Maya', 'Tercer Frente'],
     'Guantánamo': ['Baracoa', 'Caimanera', 'El Salvador', 'Guantánamo', 'Imías', 'Maisí', 'Manuel Tames', 'Niceto Pérez', 'San Antonio del Sur', 'Yateras'],
-    'Municipio Especial Isla de la Juventud': ['Municipio Especial Isla de la Juventud']
+    'Isla de la Juventud': ['Isla de la Juventud']
   };
 
   const handleMunicipioChange = (e) => {
@@ -43,7 +43,7 @@ const MunicipioSelector = ({ onMunicipioChange, provinciaSeleccionada, initMunic
     <div className='row'>
       <div className='col-12'>
         <div className='pimg'>
-        <img src="/src/assets/prov-municip.png" alt="" /> <label className='form-label txtlabel' htmlFor="municipio">Municipio:</label>
+        <img src="/assets/prov-municip.png" alt="" /> <label className='form-label txtlabel' htmlFor="municipio">Municipio:</label>
         </div>
         <select required className='selectstyle' id="municipio" value={selectedMunicipio} onChange={handleMunicipioChange}>
           <option value="">Selecciona un municipio</option>

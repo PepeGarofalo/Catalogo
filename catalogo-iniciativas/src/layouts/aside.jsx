@@ -5,7 +5,7 @@ import { exportToXLSX } from "../helpers/exportExcel";
 import { Link } from "react-router-dom";
 import { Map } from "./map";
 // holaaaaaaaaaaaaaaaaaaaaaaa
-const URI = 'http://localhost:3002/iniciativa';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 const Aside = () => {
   const [allIniciativas, setAllIniciativas] = useState([]);
@@ -15,7 +15,7 @@ const Aside = () => {
   const [menuDesplegado, setMenuDesplegado] = useState(true);
 
   useEffect(() => {
-    axios.get(URI)
+    axios.get(API_ENDPOINTS.INICIATIVA)
       .then((response) => {
         setAllIniciativas(response.data);
         const groupedByProvincia = response.data.reduce((acc, iniciativa) => {
@@ -88,7 +88,7 @@ const Aside = () => {
               </div>
             </div>
             <div className='btnVt'>
-              <img className="iconexcelmap" onClick={handleExportToXLSX} src="/src/assets/exportar excel.png" alt="Exportar a Excel" title="Exportar a Excel" />  &nbsp;Exportar tabla en Excel
+              <img className="iconexcelmap" onClick={handleExportToXLSX} src="/assets/exportar excel.png" alt="Exportar a Excel" title="Exportar a Excel" />  &nbsp;Exportar tabla en Excel
             </div>
           </div>
         </div>
@@ -98,10 +98,10 @@ const Aside = () => {
             <div className="menuDesplegadoContent">
               <div className="end padb d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
-                  <img src="/src/assets/pat.png" alt="hola" />
+                  <img src="/assets/pat.png" alt="hola" />
                   &nbsp;&nbsp;&nbsp; <strong className="strg" style={{ whiteSpace: 'nowrap' }}>{provinciaSeleccionada}</strong>
                 </div>
-                {/* <img onClick={() => setMenuDesplegado(false)} className="closeButton stbclose padim" src="/src/assets/closeorange.png" alt="" /> */}
+                {/* <img onClick={() => setMenuDesplegado(false)} className="closeButton stbclose padim" src="/assets/closeorange.png" alt="" /> */}
               </div>
               <div>
                 <ul className="scrollableList">
@@ -124,7 +124,7 @@ const Aside = () => {
           <Map></Map>
         </div>
         <div className={menuDesplegado ? "botonColapse" : "botonColapseall"} onClick={handleBotonColapseClick}>
-          <img role="button" src={menuDesplegado ? " /src/assets/cerrar.png" : "/src/assets/abrir.png"} alt="Boton Colapse" />
+          <img role="button" src={menuDesplegado ? " /assets/cerrar.png" : "/assets/abrir.png"} alt="Boton Colapse" />
         </div>
       </div>
     </div>

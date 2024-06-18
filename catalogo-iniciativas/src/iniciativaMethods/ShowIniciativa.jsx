@@ -1,18 +1,17 @@
 /* eslint-disable no-unused-vars */
-import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { loadIniciativas } from '../helpers/loadIniciativa';
 import { LogedUser } from '../../../api/src/saveJwt/saveJWT';
-import imagenExportar from '../assets/exportar excel.png';
+import imagenExportar from '/assets/exportar excel.png';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { exportToXLSX } from '../helpers/exportExcel';
 import './methodsCss.css';
-
+import API_ENDPOINTS from '../config/apiConfig';
 const MySwal = withReactContent(Swal);
-const URI = 'http://localhost:3002/iniciativa';
+
 
 const CompShowIniciativa = () => {
   const [iniciativas, setIniciativas] = useState([]);
@@ -33,7 +32,7 @@ const CompShowIniciativa = () => {
   
   const toggleDestacada = async (identificador) => {
     try {
-      await axios.put(`${URI}/${identificador}/toggleDestacada`, null, {
+      await axios.put(`${API_ENDPOINTS.INICIATIVA}/${identificador}/toggleDestacada`, null, {
         headers: {
           Authorization: `Bearer ${user._access_token}`,
         },
@@ -49,7 +48,7 @@ const CompShowIniciativa = () => {
       if (!iniciativas.find((iniciativa) => iniciativa.identificador === identificador).destacada) {
         MySwal.fire({
           title: 'Correcto',
-          text: 'Añadida a destacada.',
+          text: 'Añadida a Proyecto MAS-DESIRA.',
           icon: 'success',
           confirmButtonColor: '#F5A301',
           confirmButtonText: 'Aceptar',
@@ -62,7 +61,7 @@ const CompShowIniciativa = () => {
 
   const deleteIniciativa = async (identificador) => {
     try {
-      await axios.delete(`${URI}/${identificador}/`, {
+      await axios.delete(`${API_ENDPOINTS.INICIATIVA}/${identificador}/`, {
         headers: {
           Authorization: `Bearer ${user._access_token}`,
         },
@@ -132,11 +131,11 @@ const CompShowIniciativa = () => {
       <div className="row d-flex clnon align-items-center barrafija">
         <div className="col-1 justend">
           <Link to={"/"}>
-            <img className='' src="/src/assets/back.png" title='Volver al Inicio' alt="Volver" />
+            <img className='' src="/assets/back.png" title='Volver al Inicio' alt="Volver" />
           </Link>
         </div>
         <div className="col-1 justend">
-          <img className='iconnavsts' src="/src/assets/logoCatalogo.png" alt="" />
+          <img className='iconnavsts' src="/assets/logoCatalogo.png" alt="" />
         </div>
         <div className="col-6">
           <input
@@ -152,11 +151,11 @@ const CompShowIniciativa = () => {
         </div>
         <div className="col-1">
           <Link to="/CreateIniciativa" className='text-light text-center mt-2 mb-2'>
-            <img className='iconnavst' src="/src/assets/nieva iniciativa.png" alt="" title='Insertar una nueva iniciativa.' />
+            <img className='iconnavst' src="/assets/nieva iniciativa.png" alt="" title='Insertar una nueva iniciativa.' />
           </Link>
         </div>
         <div className="col-2 txtcolortd ftsdm">
-          <img className='iconnavsta' src="/src/assets/ADM.png" alt="admin" title='' /> &nbsp; Administración
+          <img className='iconnavsta' src="/assets/ADM.png" alt="admin" title='' /> &nbsp; Administración
         </div>
         <div></div>
       </div>
@@ -177,7 +176,9 @@ const CompShowIniciativa = () => {
               <th>Contacto</th>
               <th>Teléfono</th>
               <th>Correo</th>
-              <th>Redes</th>
+              <th>Facebook</th>
+              <th>Instagram</th>
+              <th>Twitter</th>
             </tr>
           </thead>
           <tbody>
@@ -188,9 +189,9 @@ const CompShowIniciativa = () => {
                     <div className='padtn'>
                       <img
                         className='cursorpt sizeicon'
-                        src={iniciativa.destacada ? "/src/assets/ya destacada.png" :"/src/assets/poner destacada.png"  }
+                        src={iniciativa.destacada ? "/assets/destaca.svg" :"/assets/poner destacada.png"  }
                         alt=""
-                        title='Destacada'
+                        title='Incorporar a proyecto MAS-DESIRA'
                         onClick={() => toggleDestacada(iniciativa.identificador)}
                       />
                     </div>
@@ -198,7 +199,7 @@ const CompShowIniciativa = () => {
                       <Link to={`/EditIniciativa/${iniciativa.identificador}`} className='padtn'>
                         <img
                           className="imgtable stylebtntable sizeicon"
-                          src="/src/assets/editar.png"
+                          src="/assets/editar.png"
                           alt="Editar"
                           title='Modificar iniciativa'
                         />
@@ -208,7 +209,7 @@ const CompShowIniciativa = () => {
                       <img
                         className='stylebtntable sizeicon'
                         onClick={() => confirmDeleteIniciativa(iniciativa.identificador)}
-                        src="/src/assets/eliminar.png"
+                        src="/assets/eliminar.png"
                         alt=""
                         title='Eliminar iniciativa'
                       />
@@ -227,7 +228,9 @@ const CompShowIniciativa = () => {
                 <td>{iniciativa.contacto}</td>
                 <td>{iniciativa.telefonos}</td>
                 <td>{iniciativa.correo}</td>
-                <td>{iniciativa.redes}</td>
+                <td>{iniciativa.facebook}</td>
+                <td>{iniciativa.instagram}</td>
+                <td>{iniciativa.twitter}</td>
               </tr>
             ))}
           </tbody>

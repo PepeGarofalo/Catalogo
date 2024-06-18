@@ -457,14 +457,14 @@ cursor: pointer;
     }
     .iconleyenda{
       color: #06543C;
-      font-size: large;
+      font-size:large;
     }
     .iconleyenda1{
-      color: #F5A301 !important;
+      color: red !important;
       font-size: large;
     }
     .leyendaicon{
-      width: 19.5%;
+      width: 15%;
     }
     .leyendaicon1{
       width: 15%;

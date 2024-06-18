@@ -6,25 +6,23 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../components/mapa.css';
-
-
-const URI = 'http://localhost:3002/iniciativa';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 export const Map = () => {
   const newIcon = L.icon({
-    iconUrl: '/src/assets/located.svg',
+    iconUrl: '/assets/located.svg',
     iconSize: [40, 40],
   });
 
   const iconDes = L.icon({
-    iconUrl: '/src/assets/mapa destacadas.svg',
+    iconUrl: '/assets/red marquer.svg',
     iconSize: [40, 40],
   });
 
   const [iniciativas, setInitiatives] = useState([]);
 
   useEffect(() => {
-    axios.get(URI).then((response) => {
+    axios.get(API_ENDPOINTS.INICIATIVA).then((response) => {
       setInitiatives(response.data);
     });
   }, []);
@@ -34,10 +32,10 @@ export const Map = () => {
       {/* Leyenda */}
       <div className="leyenda d-flex">
         <div className='iconleyenda'>
-        <img className='leyendaicon'  src="/src/assets/located.svg" alt="Icono 1" /> Iniciativa Agroecológica
+        <img className='leyendaicon'  src="/assets/located.svg" alt="Icono 1" /> Iniciativa Agroecológica
         </div>
     <div className='iconleyenda1'>
-    <img className='leyendaicon1'  src="/src/assets/mapa destacadas.svg" alt="Icono 2" /> Iniciativa Agroecológica Destacada
+    <img className='leyendaicon1'  src="/assets/red marquer.svg" alt="Icono 2" /> Iniciativa MAS-DESIRA
     </div>
        
       </div>

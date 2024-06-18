@@ -2,10 +2,8 @@
 import React from 'react';
 import './login.css';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import { LogedUser } from '../../../api/src/saveJwt/saveJWT';
-
-const URI = 'http://localhost:3002/auth';
+import { useNavigate } from 'react-router-dom';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,19 +12,22 @@ const Login = () => {
     try {
       e.preventDefault();
       const data = new FormData(e.target);
-      const username = data.get('username');
-      const password = data.get('password');
+      const userscatalogo = data.get('username');
+      const pasworddd = data.get('password');
 
-      const d = { username, password };
+      const d = { userscatalogo, pasworddd };
 
-      const resp = await axios.post(URI, d);
-      if (resp.data?.access_token) {
-        const user = new LogedUser(resp.data?.access_token);
-   
-        return navigate('/ShowIniciativa', { replace: true });
+      // Realiza la solicitud al endpoint de autenticación
+      const resp = await axios.post(API_ENDPOINTS.AUTH, d);
+
+      // Verifica si la respuesta indica que las credenciales son correctas
+      if (resp.data?.isAuthenticated) {
+        navigate('/ShowIniciativa', { replace: true });
+      } else {
+        alert('Credenciales Incorrectas');
       }
     } catch (error) {
-      alert('Credenciales Incorrectas');
+      alert('Error en la autenticación');
     }
   };
 
@@ -36,14 +37,13 @@ const Login = () => {
         <div className="margincont">
           <form onSubmit={login}>
             <div className="center pasing">
-              <img className="medidaslogo" src="/src/assets/consultorcolor.png" alt="" />
+              <img className="medidaslogo" src="/assets/consultorcolor.png" alt="" />
             </div>
             <div className="center mgtp">
               <label className="txt divnm" htmlFor="username">
                 Usuario
               </label>
             </div>
-
             <div className="center mgtp">
               <input
                 className="inpt"
@@ -76,9 +76,8 @@ const Login = () => {
             </div>
           </form>
         </div>
-       
       </div>
-      <img className='pdimg' src="/src/assets/login.png" alt=""/>
+      <img className="pdimg" src="/assets/login.jpg" alt="" />
     </div>
   );
 };

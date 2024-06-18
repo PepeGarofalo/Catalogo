@@ -8,9 +8,8 @@ import '../components/ficha.css';
 import PropTypes from 'prop-types';
 import SearchBar from "./searchBar";
 import { Link } from 'react-scroll';
-import Element from "react-scroll";
 import '../components/ficha.css'
-const URI = 'http://localhost:3002/iniciativa';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 export const Ban = ({ iniciativa }) => {
   const { identificador } = useParams();
@@ -22,7 +21,7 @@ export const Ban = ({ iniciativa }) => {
         if (iniciativa) {
           setIniciativaData(iniciativa);
         } else if (identificador) {
-          const response = await axios.get(`${URI}/${identificador}`);
+          const response = await axios.get(`${API_ENDPOINTS.INICIATIVA}/${identificador}`);
           setIniciativaData(response.data);
         }
       } catch (error) {
@@ -36,11 +35,11 @@ export const Ban = ({ iniciativa }) => {
   return (
     <>
       <SearchBar />
-      <div className='cesped' style={{ backgroundImage: `url("/src/assets/foto ficha.png")` }}></div>
+      <div className='cesped' style={{ backgroundImage: `url(${iniciativaData.imagenes && iniciativaData.imagenes.length > 0 ? iniciativaData.imagenes[0] : "/assets/banficha.jpg"})` }}></div>
       <div className="container">
         <div className="row centrate rowup">
           <div className="col-4">
-            <img className="casares" src="/src/assets/lacasita.png" alt="Logo Ficha" />
+            <img className="casares" src="/assets/lacasita.png" alt="Logo Ficha" />
           </div>
           <div className="col-8 textoficha">
             <p className="padup" style={{ whiteSpace: 'nowrap' }}>
@@ -51,8 +50,8 @@ export const Ban = ({ iniciativa }) => {
         {iniciativaData.destacada && (
           <div className="row">
             <div className="col-12 fi tpoi">
-              <img className="estrella" src="/src/assets/destaca.svg" alt="Destacada" />
-              <p className="yelou">Destacada</p>
+              <img className="estrella" src="/assets/destaca.svg" alt="Destacada" />
+              <p className="yelou">Iniciativa MAS-DESIRA</p>
             </div>
           </div>
         )}
@@ -68,14 +67,14 @@ export const Ban = ({ iniciativa }) => {
             </div>
             <div className="txtkonw dsnohay">
               <Link to="infoSection" smooth={true} duration={500}>
-                <img src="/src/assets/knowmore.jpg" className='cursorpt' alt="conocer mas" />
+                <img src="/assets/knowmore.jpg" className='cursorpt' alt="conocer mas" />
               </Link> &nbsp;Conocer más
             </div>
           </div>
           <div className="col-lg-8 col-md-8 col-sm-12 col-xsm-12 ender palmedio">
             <div className="tematicaficha nameini">
               <div className="padbcomponente">
-                <img className="iconsresp" src="/src/assets/bombillo.png" alt="img Temática" /> Temática
+                <img className="iconsresp" src="/assets/bombillo.png" alt="img Temática" /> Temática
               </div>
               <div className="pdtextinside">
                 <p className="txttematica">{iniciativaData.tematica}</p>
@@ -89,9 +88,6 @@ export const Ban = ({ iniciativa }) => {
       {identificador && <Info identificador={identificador.toString()} iniciativaData={iniciativaData} />}
 {!identificador && iniciativa && iniciativa.identificador && <Info identificador={iniciativa.identificador.toString()} iniciativaData={iniciativa} />}
 
-      </div>
-      <div className='footerinfo'>
-        z
       </div>
     </>
   );

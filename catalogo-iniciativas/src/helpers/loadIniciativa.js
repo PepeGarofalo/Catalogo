@@ -1,10 +1,11 @@
 import  axios  from "axios";
 import { LogedUser } from '../../../api/src/saveJwt/saveJWT';
-const URI='http://localhost:3002/iniciativa'
+import API_ENDPOINTS from "../config/apiConfig";
+
 export const loadIniciativas =async ()=>{
   const user = new LogedUser()
     try {
-      const resultado = await axios.get(URI,{headers:{
+      const resultado = await axios.get(API_ENDPOINTS.INICIATIVA,{headers:{
         Authorization :`Bearer ${user._access_token}`
     }});
       return resultado

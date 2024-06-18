@@ -1,4 +1,4 @@
-import { useLocation, NavLink } from 'react-router-dom';
+import { useLocation, NavLink, useNavigate } from 'react-router-dom'; // Importa useNavigate
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Outlet, Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
@@ -6,11 +6,12 @@ import './navbar.css';
 import CompShowIniciativa from '../iniciativaMethods/ShowIniciativa';
 import CreateIniciativa from '../iniciativaMethods/CreateIniciativa';
 import EditIniciativa from '../iniciativaMethods/EditIniciativa';
-
-const URI = 'http://localhost:3002/iniciativa';
+import axios from 'axios';
+import API_ENDPOINTS from '../../src/config/apiConfig';
 
 const NavBar = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Inicializa useNavigate
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   const [iniciativas, setIniciativas] = useState([]);
@@ -20,9 +21,8 @@ const NavBar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(URI);
-        const data = await response.json();
-        setIniciativas(data);
+        const response = await axios.get(API_ENDPOINTS.INICIATIVA);
+        setIniciativas(response.data); // Corrige esto
       } catch (error) {
         console.error('Error al obtener la lista de iniciativas:', error);
       }
@@ -47,30 +47,27 @@ const NavBar = () => {
     }
   }, [searchTerm, iniciativas]);
 
-  // Nuevo useEffect para actualizar las iniciativas cada vez que se cambia de ruta
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(URI);
-        const data = await response.json();
-        setIniciativas(data);
+        const response = await axios.get(API_ENDPOINTS.INICIATIVA);
+        setIniciativas(response.data); // Corrige esto
       } catch (error) {
         console.error('Error al obtener la lista de iniciativas:', error);
       }
     };
 
-    // Solo se actualiza si la ruta no es "/CreateIniciativa" o "/EditIniciativa/"
     if (!(location.pathname === '/CreateIniciativa' || location.pathname.includes('/EditIniciativa/'))) {
       fetchData();
     }
-  }, [location.pathname]); // Se ejecuta cada vez que cambia la ruta
+  }, [location.pathname]);
+
   useEffect(() => {
-    // Limpia el término de búsqueda y los resultados filtrados cuando cambias de vista
     clearSearch();
   }, [location.pathname]);
-  
+
   const handleResultClick = (iniciativa) => {
-    window.location.href = `/ficha/${iniciativa.identificador}`;
+    navigate(`/ficha/${iniciativa.identificador}`); // Usa navigate para la redirección
     clearSearch();
   };
 
@@ -85,10 +82,10 @@ const NavBar = () => {
   };
 
   if (location.pathname === '/ShowIniciativa') {
-    return <CompShowIniciativa></CompShowIniciativa>;
+    return <CompShowIniciativa />;
   }
   if (location.pathname === '/CreateIniciativa') {
-    return <CreateIniciativa />
+    return <CreateIniciativa />;
   }
   if (location.pathname.includes('/EditIniciativa/')) {
     return <EditIniciativa />;
@@ -98,7 +95,9 @@ const NavBar = () => {
     <>
       <Navbar className="degradate" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand><img src="/src/assets/logoCatalogo.png" className='imgnvbr' alt="logo del catálogo" /></Navbar.Brand>
+          <Navbar.Brand>
+            <img src="/assets/logoCatalogo.png" className='imgnvbr' alt="logo del catálogo" />
+          </Navbar.Brand>
           <input
             className="inpts dnonelg"
             type="text"
@@ -106,7 +105,7 @@ const NavBar = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Navbar.Toggle  aria-controls="basic-navbar-nav" />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse className='' id="basic-navbar-nav">
             <Nav.Link className={`Clr ajust colorLinks ${location.pathname === '/' ? 'active' : ''}`} as={Link} to="/">
               Inicio
@@ -125,18 +124,20 @@ const NavBar = () => {
               Estadística
             </Nav.Link>
           </Navbar.Collapse>
-          <Nav.Link className="rgt dnonelg" as={Link} to="/login"><img className="iconlg" src="/src/assets/ADM.png" alt="logo de admin" /></Nav.Link>
+          <Nav.Link className="rgt dnonelg" as={Link} to="/login">
+            <img className="iconlg" src="/assets/ADM.png" alt="logo de admin" />
+          </Nav.Link>
         </Container>
       </Navbar>
       {showResults && (
         <div className={`search-results ml-5 positionsearch ${searchResultsVisible ? 'visible' : ''}`}>
           <div className='final'>
-            <img className='closebtn' src="/src/assets/close.png" alt="Cerrar búsqueda" onClick={closeSearchResults} />
+            <img className='closebtn' src="/assets/close.png" alt="Cerrar búsqueda" onClick={closeSearchResults} />
           </div>
           <ul className='searcnavbar'>
             {filteredResults.map((iniciativa) => (
               <li className='serachresult' key={iniciativa.identificador} onClick={() => handleResultClick(iniciativa)}>
-                <img className="imglist" src="/src/assets/icon.png" alt="Icono" />
+                <img className="imglist" src="/assets/icon.png" alt="Icono" />
                 <Link className='serachresult' to={`/ficha/${iniciativa.identificador}`}>{iniciativa.nombre_iniciativa}</Link>
               </li>
             ))}
@@ -144,7 +145,7 @@ const NavBar = () => {
         </div>
       )}
       <section>
-        <Outlet></Outlet>
+        <Outlet />
       </section>
     </>
   );

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import axios from 'axios';
+import API_ENDPOINTS from '../config/apiConfig';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -13,9 +14,7 @@ export const IniciativasPorMunicipioBar = ({ provinciaSeleccionada }) => {
   const [iniciativasPorMunicipio, setIniciativasPorMunicipio] = useState({});
 
   useEffect(() => {
-    const URI = 'http://localhost:3002/iniciativa';
-
-    axios.get(URI)
+    axios.get(API_ENDPOINTS.INICIATIVA)
       .then((response) => {
         const filteredByProvincia = response.data.filter(
           (iniciativa) => iniciativa.nombre_provincia.trim() === provinciaSeleccionada
@@ -102,7 +101,11 @@ export const IniciativasPorMunicipioBar = ({ provinciaSeleccionada }) => {
             const cantidadTotal = detallesMunicipio.total;
             const cantidadDestacadas = detallesMunicipio.destacadas;
             const porcentajeDestacadas = cantidadTotal > 0 ? ((cantidadDestacadas / cantidadTotal) * 100).toFixed(2) : 0;
-            return `Iniciativas Agroecológicas : ${cantidadTotal}, Iniciativas Agroecológicas Destacadas: ${cantidadDestacadas} Representan un ${porcentajeDestacadas} % del total`;
+            return [
+              `Iniciativas Agroecológicas: ${cantidadTotal}`,
+              `Iniciativas MAS-DESIRA: ${cantidadDestacadas}`,
+              `Representan un ${porcentajeDestacadas} % del total`
+            ];
           },
         },
       },

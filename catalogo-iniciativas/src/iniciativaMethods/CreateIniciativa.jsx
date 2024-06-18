@@ -8,11 +8,11 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import ProvinciaSelector from '../layouts/provinciaselect';
 import MunicipioSelector from '../layouts/municipioselect';
-
+import API_ENDPOINTS from '../../src/config/apiConfig';
 const MySwal = withReactContent(Swal);
 
-const URI = 'http://localhost:3002/iniciativa';
-const URI_UPLOAD = 'http://localhost:3002/uploads/upload';
+
+
 const CreateIniciativa = () => {
   const [iniciativasExistente, setIniciativasExistente] = useState([]);
   const [nombre_iniciativa, setNombreI] = useState('');
@@ -27,21 +27,23 @@ const CreateIniciativa = () => {
   const [contacto, setContacto] = useState('');
   const [telefonos, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
-  const [redes, setRedes] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [instagram, setInsta] = useState('');
+  const [twitter, setTw] = useState('');
   const [imagenes, setImagn] = useState('');
   const [identificador, setIden] = useState('');
   const [newIniciativaId, setNewIniciativaId] = useState('');
   const [latitudError, setLatitudError] = useState('');
   const [longitudError, setLongitudError] = useState('');
   const [nombreIniciativaError, setNombreIniciativaError] = useState('');
-  const [image, setImage] = useState('');
+  // const [image, setImage] = useState([]);
   const [destacada, setDestacada] = useState(false);
   const navigate = useNavigate();
 
   // Obtener las iniciativas existentes al cargar el componente
   useEffect(() => {
     const fetchIniciativas = async () => {
-      const response = await axios.get(URI);
+      const response = await axios.get(API_ENDPOINTS.INICIATIVA);
       setIniciativasExistente(response.data);
     };
 
@@ -49,33 +51,34 @@ const CreateIniciativa = () => {
   }, []);
 
   // Procedimiento para guardar
-  const save = async (e) => {
-    e.preventDefault();
+const save = async (e) => {
+  e.preventDefault();
+  
+  // Convertir el nombre ingresado por el usuario a minúsculas
+  const nombreIniciativaUsuario = nombre_iniciativa.toLowerCase();
 
-    // Convertir el nombre ingresado por el usuario a minúsculas
-    const nombreIniciativaUsuario = nombre_iniciativa.toLowerCase();
+  // Verificar si la iniciativa ya existe en el estado local
+  // const existeIniciativa = iniciativasExistente.some(
+  //   (iniciativa) => iniciativa.nombre_iniciativa.toLowerCase() === nombreIniciativaUsuario
+  // );
 
-    // Verificar si la iniciativa ya existe en el estado local
-    const existeIniciativa = iniciativasExistente.some(
-      (iniciativa) => iniciativa.nombre_iniciativa.toLowerCase() === nombreIniciativaUsuario
-    );
+  // if (existeIniciativa) {
+  //   setNombreIniciativaError('Iniciativa ya existente. Intente con un nombre diferente.');
+  //   MySwal.fire({
+  //     icon: 'error',
+  //     title: 'Error',
+  //     text: 'La iniciativa ya existe. Por favor, intente con un nombre diferente.',
+  //     confirmButtonColor: '#F5A301', 
+  //     confirmButtonText: 'Aceptar',
+  //   });
+  //   return;
+  // }
 
-    if (existeIniciativa) {
-      setNombreIniciativaError('Iniciativa ya existente. Intente con un nombre diferente.');
-      MySwal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'La iniciativa ya existe. Por favor, intente con un nombre diferente.',
-        confirmButtonColor: '#F5A301', 
-        confirmButtonText: 'Aceptar',
-      });
-      return;
-    }
+  // setNombreIniciativaError(''); // Limpiar el mensaje de error si no hay duplicados
 
-    setNombreIniciativaError(''); // Limpiar el mensaje de error si no hay duplicados
-
-    // Continuar con la inserción si no hay duplicados
-    const response = await axios.post(URI, {
+  // Continuar con la inserción si no hay duplicados
+  try {
+    const response = await axios.post(API_ENDPOINTS.INICIATIVA, {
       identificador,
       nombre_iniciativa,
       tematica,
@@ -89,35 +92,36 @@ const CreateIniciativa = () => {
       contacto,
       telefonos,
       correo,
-      redes,
-      imagenes,
+      facebook,
+      instagram,
+      twitter,
+      imagenes: null,
     });
 
     // Obtener el ID de la iniciativa recién creada
     const newIniciativaId = response.data.identificador;
     setNewIniciativaId(newIniciativaId);
-    console.log('ID de iniciativa:', newIniciativaId);
-    // Subir la imagen si está seleccionada
-    if (image) {
-      const formData = new FormData();
-      formData.append('images', image);
-      
+  
+    // Subir las imágenes si están seleccionadas
+
+      const formData = new FormData(e.target);
+      formData.append('iniciativaId', newIniciativaId);
+
+
+          
       try {
-     
-        formData.append('iniciativaId', newIniciativaId);
-        const response = await axios.post(URI_UPLOAD, formData, {
+        const res = await axios.post(API_ENDPOINTS.UPLOAD, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log('Iniciativa ID:', newIniciativaId);
-        console.log(response.data);
-      } 
-      catch (error) {
-        console.error(error);
-        console.error(error.response.data);
+        console.log('Imagenes subida:', res.data);
+      } catch (error) {
+        console.error('Error al subir imagen:', error);
       }
-    }
+    
+
+    // Mostrar mensaje de guardado exitoso
     MySwal.fire({
       icon: 'success',
       title: 'Guardado exitoso',
@@ -125,35 +129,41 @@ const CreateIniciativa = () => {
       confirmButtonColor: '#F5A301', 
       confirmButtonText: 'Aceptar',
     });
+
+    // Redireccionar a la página de visualización de iniciativas
     navigate('/ShowIniciativa');
-  };
+  } catch (error) {
+    console.error('Error al guardar la iniciativa:', error);
+  }
+};
+
   const handleDestacadaClick = async () => {
     // Alternar el estado de destacada
     setDestacada(!destacada);
 
     // Realizar la solicitud al servidor para actualizar el estado en la base de datos
     try {
-      await axios.put(`${URI}/toggleDestacada`, { destacada: !destacada });
+      await axios.put(`${API_ENDPOINTS.INICIATIVA}/toggleDestacada`, { destacada: !destacada });
     } catch (error) {
       console.error('Error al actualizar el estado en la base de datos', error);
     }
   };
 
-  const handleNombreIniciativaChange = (e) => {
-    setNombreI(e.target.value);
+  // const handleNombreIniciativaChange = (e) => {
+  //   setNombreI(e.target.value);
 
-    // Convertir el nombre a minúsculas y verificar si ya existe en las iniciativas existentes
-    const nombreIniciativaUsuario = e.target.value.toLowerCase();
-    const existeIniciativa = iniciativasExistente.some(
-      (iniciativa) => iniciativa.nombre_iniciativa.toLowerCase() === nombreIniciativaUsuario
-    );
+  //   // Convertir el nombre a minúsculas y verificar si ya existe en las iniciativas existentes
+  //   const nombreIniciativaUsuario = e.target.value.toLowerCase();
+  //   const existeIniciativa = iniciativasExistente.some(
+  //     (iniciativa) => iniciativa.nombre_iniciativa.toLowerCase() === nombreIniciativaUsuario
+  //   );
 
-    if (existeIniciativa) {
-      setNombreIniciativaError('Iniciativa ya existente. Intente con un nombre diferente.');
-    } else {
-      setNombreIniciativaError('');
-    }
-  };
+  //   if (existeIniciativa) {
+  //     setNombreIniciativaError('Iniciativa ya existente. Intente con un nombre diferente.');
+  //   } else {
+  //     setNombreIniciativaError('');
+  //   }
+  // };
 
   const validateNumberInput = (value, setValue, setError) => {
     const regex = /^[0-9,]*$/; // Acepta solo dígitos y comas
@@ -177,6 +187,8 @@ const CreateIniciativa = () => {
       MySwal.fire({
         icon: 'error',
         title: 'Error',
+
+
         text: 'Por favor, ingrese un valor válido ejemplo 23.4',
         confirmButtonColor: '#F5A301', 
         confirmButtonText: 'Aceptar',
@@ -229,34 +241,38 @@ const CreateIniciativa = () => {
     }
   };
 
+  // eeeeeeeeeeeeeeeeeeeeeeee
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  };
+  // const handleImageChange = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   setImage(files); // Almacena todas las imágenes seleccionadas
+  // };
+  
+  
   // console.log(handleImageChange);
   return (
     <>
     <div className="">
-    <div className="divalmacen" style={{ backgroundImage: "url('/src/assets/nueva iniciativa foto.png')" }}>
+    <div className="divalmacen" style={{ backgroundImage: "url('/assets/nueva iniciativa foto.jpg')" }}>
 <div className="container">
 <div className="row padtp">
 <div className="col-6">
-<Link to={'/ShowIniciativa'}><img className='' src="/src/assets/atras.png" alt="Volver" /></Link>
+<Link to={'/ShowIniciativa'}><img className='' src="/assets/atras.png" alt="Volver" /></Link>
 </div>
 <div className="col-6 text-white fontpar justend">
-<img  src="/src/assets/administracion.png" alt="" />&nbsp; Administración
+<img  src="/assets/administracion.png" alt="" />&nbsp; Administración
 </div>
 </div>
 <div className="row mrgt">
   <div className="col-2 justend">
-    <img src="/src/assets/nueva iniciativa grande.png" alt="hola" />
+    <img className='imgadm'  src="/assets/nueva iniciativa grande.png" alt="hola" />
   </div>
   <div className="col-8 center padintext">
     <p>Inserte la información requerida en cada campo para añadir una nueva iniciativa al sistema.</p>
   </div>
   {/* <div className={`col-2 center textdest ${destacada ? 'destacada' : ''}`} onClick={handleDestacadaClick}>
       <img
-        src={destacada ? "/src/assets/ya destacada.png": "/src/assets/poner destacada.png" }
+        src={destacada ? "/assets/ya destacada.png": "/assets/poner destacada.png" }
         alt="Destacada"
       />
       &nbsp; Iniciativa destacada
@@ -271,7 +287,7 @@ const CreateIniciativa = () => {
         <p className='colortxt'> </p>
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-          <img src="/src/assets/nombre.png" alt="" />    Nombre de la Iniciativa
+          <img src="/assets/nombre.png" alt="" />    Nombre de la Iniciativa
             </label>
             <input
               value={nombre_iniciativa}
@@ -287,7 +303,7 @@ const CreateIniciativa = () => {
           {nombreIniciativaError && <div className="invalid-feedback">{nombreIniciativaError}</div>}
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/tematica.png" alt="" />    Temática 
+            <img src="/assets/tematica.png" alt="" />    Temática 
             </label>
             <input
               value={tematica}
@@ -300,7 +316,7 @@ const CreateIniciativa = () => {
           </div>
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/propietario.png" alt="" />  Propietario
+            <img src="/assets/propietario.png" alt="" />  Propietario
             </label>
             <input
               value={propietario}
@@ -320,7 +336,7 @@ const CreateIniciativa = () => {
 </div>
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/direccion.png" alt="" />   Dirección
+            <img src="/assets/direccion.png" alt="" />   Dirección
             </label>
             <input
               value={direccion}
@@ -333,7 +349,7 @@ const CreateIniciativa = () => {
           </div>
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/latitud longitud.png" alt="" />  Coordenadas
+            <img src="/assets/latitud longitud.png" alt="" />  Coordenadas
             </label>
             <div className="d-flex">
               <input
@@ -346,7 +362,9 @@ const CreateIniciativa = () => {
               />
               <input
                 value={longitud}
-                onChange={(e) => validateCoordinateLoInput(e.target.value, setLongitud, setLatitudError,'longitud')}
+                onChange={(e) =>
+
+ validateCoordinateLoInput(e.target.value, setLongitud, setLatitudError,'longitud')}
                 type="text"
                 required
                 className={`form-control same-width inptt ${longitud ? 'is-valid' : 'is-invalid'}`}
@@ -367,7 +385,7 @@ const CreateIniciativa = () => {
 </div>
    <div className="col-md-4 mb-3">  
              <label htmlFor="" className="form-label txtlabel">
-             <img src="/src/assets/hectareas.png" alt="" /> Hectáreas 
+             <img src="/assets/hectareas.png" alt="" /> Hectáreas 
             </label>
             <input
               value={hectareas}
@@ -379,11 +397,11 @@ const CreateIniciativa = () => {
           </div>
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/persona contacto.png" alt="" /> Contacto
+            <img src="/assets/persona contacto.png" alt="" /> Contacto
             </label>
             <input
               value={contacto}
-              onChange={(e) =>validateTextOnlyInput (e.target.value,setContacto)}
+              onChange={(e) =>setContacto(e.target.value)}
               type="text"
               className="form-control same-width inptt"
               placeholder='Inserte el nombre de la persona a contactar'
@@ -395,11 +413,11 @@ const CreateIniciativa = () => {
       
     <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/redes sociales.png" alt="" /> Redes sociales
+            <img src="/assets/redes sociales.png" alt="" /> Facebook
             </label>
             <input
-              value={redes}
-              onChange={(e) =>setRedes(e.target.value)}
+              value={facebook}
+              onChange={(e) =>setFacebook(e.target.value)}
               type="text"
               className="form-control same-width inptt"
               placeholder='Inserte las redes sociales de la iniciativa'
@@ -407,7 +425,31 @@ const CreateIniciativa = () => {
           </div>
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/telefono.png" alt="" />      Teléfono
+            <img src="/assets/redes sociales.png" alt="" /> Instagram
+            </label>
+            <input
+              value={instagram}
+              onChange={(e) =>setInsta(e.target.value)}
+              type="text"
+              className="form-control same-width inptt"
+              placeholder='Inserte las redes sociales de la iniciativa'
+            />
+          </div>
+          <div className="col-md-4 mb-3">
+            <label htmlFor="" className="form-label txtlabel">
+            <img src="/assets/redes sociales.png" alt="" /> Twitter
+            </label>
+            <input
+              value={twitter}
+              onChange={(e) =>setTw(e.target.value)}
+              type="text"
+              className="form-control same-width inptt"
+              placeholder='Inserte las redes sociales de la iniciativa'
+            />
+          </div>
+          <div className="col-md-4 mb-3">
+            <label htmlFor="" className="form-label txtlabel">
+            <img src="/assets/telefono.png" alt="" />      Teléfono
             </label>
             <input
               value={telefonos}
@@ -420,7 +462,7 @@ const CreateIniciativa = () => {
     
           <div className="col-md-4 mb-3">
             <label htmlFor="" className="form-label txtlabel">
-            <img src="/src/assets/correo.png" alt="" />   Correo
+            <img src="/assets/correo.png" alt="" />   Correo
             </label>
             <input
               value={correo}
@@ -434,7 +476,7 @@ const CreateIniciativa = () => {
     </div>
     <div className="row">
       <div className="col-md-4 pt-2 justend txtlabel ">
-      <img src="/src/assets/imagenes.png" alt="Subir img" /> &nbsp;Imágenes &nbsp;
+      <img src="/assets/imagenes.png" alt="Subir img" /> &nbsp;Imágenes &nbsp;
       </div>
     <div className="col-md-4 mb-3">
     <input type="hidden" name="identificador" value={newIniciativaId} />
@@ -442,9 +484,10 @@ const CreateIniciativa = () => {
       <input
         type="file"
         name="images"
-        accept=".pdf,.doc,.docx,.txt"
-        onChange={handleImageChange}
+        accept=".jpg,.jpeg,.png,.gif"
+        multiple
         className="form-control same-width inptt input-file"
+      
       />
     </div>
   </div>
@@ -470,5 +513,3 @@ const CreateIniciativa = () => {
 };
 
 export default CreateIniciativa;
-
- 

@@ -33,7 +33,7 @@
   padding-top: 10px;
 }
 .medidaslogo{
-  width: 60%;
+  width: 20%;
 }
 .divnm{
   width: 50%;
@@ -41,7 +41,7 @@
   justify-content: start !important;
 }
 .margincont{
- padding-top: 200px;
+ padding-top: 100px;
 }
 .mgtp{
 margin-top: 12px;
@@ -53,5 +53,5 @@ height:100vh;
 
 }
 .pasing{
-  padding-bottom: 20%;
+  padding-bottom: 10%;
 }

@@ -1,4 +1,4 @@
-import{Entity,Column, PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn, BaseEntity, NumericType,Unique} from 'typeorm'
+import{Entity,Column, PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn, BaseEntity,Unique} from 'typeorm'
 @Entity()
 export class Iniciativa extends BaseEntity{
 @PrimaryGeneratedColumn()
@@ -28,11 +28,15 @@ contacto:string
 telefonos:string  
 @Column()
 correo :string
-@Column()
-redes:string
+@Column({ nullable: true, default: null })
+facebook:string
+@Column({ nullable: true, default: null })
+instagram:string
+@Column({ nullable: true, default: null })
+twitter:string
 @Column({ default: false }) // Valor predeterminado es falso
 destacada: boolean;
-@Column('simple-array', { nullable: true }) // Permitir un array de strings (rutas de las imágenes)
+@Column('simple-array', { nullable: true, default: null }) // Permitir un array de strings (rutas de las imágenes)
 imagenes: string[];
 @CreateDateColumn() //propieda de actualizacion 
 createdAt:Date;

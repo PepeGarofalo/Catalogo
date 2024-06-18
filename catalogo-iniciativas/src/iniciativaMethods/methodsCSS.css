@@ -201,6 +201,7 @@ background-color: #F0F9EC;
   overflow-y: auto; 
   overflow-x: auto; 
 }
+
 /* CSS CREATE--- UPDATE-------------------------- */
 .divalmacen{
   position: relative;
@@ -209,15 +210,37 @@ background-color: #F0F9EC;
   background-size: cover;
   background-position: center;
 }
-.mrgt{
-padding-top: 135px;
-}
+
 .padintext{
   padding-top: 80px;
   font-size: 20px;
   font-weight: bold;
   color:#012C1E;
 }
+.mrgt{
+padding-top: 135px;
+}
+ @media screen and (min-width: 1000px) and (max-width: 1400px) {
+ 
+  .imgadm{
+    width: 100% ;
+    margin-top: -120px;
+   }
+}
+@media screen and (min-width: 1600px) and (max-width: 1920px) {
+  .padintext{
+    padding-top: 200px;
+    font-size: 20px;
+    font-weight: bold;
+    color:#012C1E;
+  }
+  .imgadm{
+    width: 100% ;
+    margin-top: 100px;
+   }
+}  
+ 
+
 .fontpar{
   font-size:x-large;
   font-weight: bold;
